@@ -111,17 +111,25 @@ function loadComments() {
     const url = currentAirline === "all"
         ? "/api/stream_latest_comments_realtime?limit=10"
         : `/api/stream_latest_comments_realtime?airline=${currentAirline}&limit=10`;
-
+    const sentimentColors = {
+        positive: '#28a745', // xanh
+        neutral: '#ffc107',  // vàng
+        negative: '#dc3545'  // đỏ
+    };
     fetch(url)
         .then(r => r.json())
         .then(rows => {
             const box = document.getElementById("comments_box_content");
-            box.innerHTML = rows.map(c => `
-                <div style="margin-bottom:8px">
-                    <strong>${c.airline}</strong> – <em>${c.sentiment}</em><br>
-                    ${c.text}<br>
-                    <small>${c.time}</small>
-                </div>`).join('');
+            box.innerHTML = rows.map(c => {
+                const color = sentimentColors[c.sentiment.toLowerCase()] || '#000000';
+                return `
+                    <div style="margin-bottom:8px">
+                        <strong>${c.airline}</strong> – 
+                        <em style="color:${color}">${c.sentiment}</em><br>
+                        ${c.text}<br>
+                        <small>${c.time}</small>
+                    </div>`;
+            }).join('');
         });
 }
 
