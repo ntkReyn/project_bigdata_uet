@@ -1,0 +1,195 @@
+/* ===================== CONTAINER ===================== */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.container {
+    height: 100%;
+}
+
+.container {
+    padding: 15px;
+    font-family: "Arial", sans-serif;
+    background: linear-gradient(to bottom, #e6f0fa, #ffffff); /* nền bầu trời sáng */
+    color: #1b1b1b;
+}
+
+/* ===================== MENU ===================== */
+.menu {
+    margin-bottom: 15px;
+}
+
+.tab-btn {
+    padding: 8px 15px;
+    margin-right: 10px;
+    cursor: pointer;
+    border: 1px solid #0077c2; /* xanh dương chủ đạo */
+    border-radius: 5px;
+    background: #ffffff;
+    color: #0077c2;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.tab-btn:hover {
+    background: rgba(0, 119, 194, 0.1);
+}
+
+.tab-btn.active {
+    background: #0077c2;
+    color: #ffffff;
+}
+
+/* ===================== TABS ===================== */
+.tab {
+    display: none;
+}
+
+.tab.active {
+    display: block;
+}
+
+/* ===================== GRID ===================== */
+/* Grid cha full height */
+.grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* trái 2/3 — phải 1/3 */
+    gap: 20px;
+    height: 600px; /* full chiều cao parent container */
+    margin-bottom: 30px;
+}
+
+/* Cột trái cao bằng tổng 2 ô cột phải */
+.col-left {
+    grid-column: 1 / span 1;
+    gap: 20px;
+    height: 100%; /* chiếm toàn bộ chiều cao grid */
+    display: flex;
+    flex-direction: column; /* nếu muốn stack các chart bên trái */
+}
+
+/* Cột phải chia 2 ô dọc */
+.col-right {
+    grid-column: 2 / span 1;
+    display: grid;
+    gap: 20px;
+    height: 100%;
+}
+
+
+/* ===================== COMPONENTS ===================== */
+.chart {
+    width: 100%;
+    height: 600px;
+    background: rgba(0, 119, 194, 0.05); /* nền mờ, màu xanh dương nhạt */
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.chart.small {
+    height: 250px;
+}
+
+.comments-box {
+    background: rgba(255, 255, 255, 0.85); /* nền mờ trắng */
+    border-radius: 8px;
+    padding: 10px;
+    overflow-y: auto;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    top: 50px;
+}
+
+.comments-box h3 {
+    margin-top: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #0077c2;
+}
+
+/* ===================== BORDERS, COLORS ===================== */
+.chart .highcharts-background {
+    fill: rgba(0, 119, 194, 0.05); /* nền mờ chart Highcharts */
+}
+
+.chart .highcharts-series-0 {
+    stroke: #0077c2;
+    fill: rgba(0, 119, 194, 0.3);
+}
+
+.chart .highcharts-series-1 {
+    stroke: #e60023;
+    fill: rgba(230,0,35,0.3);
+}
+
+.chart .highcharts-series-2 {
+    stroke: #ffc107;
+    fill: rgba(255,193,7,0.3);
+}
+
+/* ===================== SCROLLBAR ===================== */
+.comments-box {
+    max-height: 600px;        /* hoặc chiều cao bạn muốn */
+    overflow-y: auto;         /* bật scroll dọc */
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    font-size: 14px;
+}
+
+/* scrollbar đẹp cho webkit */
+.comments-box::-webkit-scrollbar {
+    width: 8px;
+}
+
+.comments-box::-webkit-scrollbar-thumb {
+    background: rgba(0, 119, 194, 0.5);
+    border-radius: 4px;
+}
+
+.comments-box::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.05);
+}
+
+/* ===================== CHART CONTAINER ===================== */
+.chart-container {
+    width: 100%;
+    background: rgba(0, 119, 194, 0.05); /* nền mờ xanh dương nhạt */
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 15px;
+    margin-bottom: 30px;
+    font-family: "Arial", sans-serif;
+}
+
+/* Header chart (tên + dropdown) */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.chart-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #0077c2;
+}
+
+.chart-header select {
+    padding: 5px 10px;
+    border: 1px solid #0077c2;
+    border-radius: 5px;
+    background: #ffffff;
+    color: #0077c2;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.chart-header select:hover {
+    background: rgba(0, 119, 194, 0.1);
+}
