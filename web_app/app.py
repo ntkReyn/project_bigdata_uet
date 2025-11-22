@@ -203,13 +203,24 @@ def api_stream_trending_totals_realtime():
 
         # Tổng số comment theo sentiment mỗi 5s
         cur.execute("""
-            SELECT 
-                to_timestamp(floor(extract('epoch' from event_time) / 5) * 5) AS time_bucket,
-                sentiment,
-                COUNT(*) AS total_count
-            FROM stream_comments
-            GROUP BY time_bucket, sentiment
-            ORDER BY time_bucket ASC;
+            WITH bucketed AS (
+                SELECT 
+                    to_timestamp(floor(extract('epoch' from event_time) / 5) * 5) AS time_bucket,
+                    sentiment,
+                    COUNT(*) AS total_count
+                FROM stream_comments
+                GROUP BY time_bucket, sentiment
+            ),
+            latest_20 AS (
+                SELECT DISTINCT time_bucket
+                FROM bucketed
+                ORDER BY time_bucket DESC
+                LIMIT 20
+            )
+            SELECT b.time_bucket, b.sentiment, b.total_count
+            FROM bucketed b
+            JOIN latest_20 l ON b.time_bucket = l.time_bucket
+            ORDER BY b.time_bucket ASC;
         """)
         rows = cur.fetchall()
         cur.close()
@@ -352,19 +363,31 @@ def api_stream_sentiment_score_realtime():
 
         # Tính điểm cảm xúc trung bình theo bucket
         cur.execute(f"""
-            SELECT 
-                airline,
-                to_timestamp(floor(extract('epoch' from event_time) / {interval_sec}) * {interval_sec}) AS time_bucket,
-                AVG(
-                    CASE sentiment
-                        WHEN 'positive' THEN 1
-                        WHEN 'neutral' THEN 0.5
-                        WHEN 'negative' THEN 0
-                    END
-                ) AS avg_score
-            FROM stream_comments
-            GROUP BY airline, time_bucket
-            ORDER BY time_bucket ASC;
+            WITH bucketed AS (
+                SELECT 
+                    airline,
+                    to_timestamp(floor(extract('epoch' from event_time) / {interval_sec}) * {interval_sec}) AS time_bucket,
+                    AVG(
+                        CASE sentiment
+                            WHEN 'positive' THEN 1
+                            WHEN 'neutral' THEN 0.5
+                            WHEN 'negative' THEN 0
+                        END
+                    ) AS avg_score
+                FROM stream_comments
+                GROUP BY airline, time_bucket
+            ),
+            latest_20 AS (
+                SELECT DISTINCT time_bucket
+                FROM bucketed
+                ORDER BY time_bucket DESC
+                LIMIT 20
+            )
+            SELECT b.airline, b.time_bucket, b.avg_score
+            FROM bucketed b
+            JOIN latest_20 l ON b.time_bucket = l.time_bucket
+            ORDER BY b.time_bucket ASC, b.airline;
+
         """, (interval_sec,))
 
         rows = cur.fetchall()
