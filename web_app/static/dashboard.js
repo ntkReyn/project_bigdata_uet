@@ -31,11 +31,15 @@ function loadTrendingChart() {
         .then(r => r.json())
         .then(data => {
             if (!data.labels || !data.datasets) return;
-
+            const sentimentColors = {
+                positive: '#28a745', // xanh
+                neutral: '#ffc107',  // vàng
+                negative: '#dc3545'  // đỏ
+            };
             const series = data.datasets.map(ds => ({
                 name: ds.label,
                 data: ds.data,
-                color: ds.backgroundColor
+                color: sentimentColors[ds.label.toLowerCase()] || '#000000'
             }));
 
             if (!trendingChart) {
@@ -45,6 +49,13 @@ function loadTrendingChart() {
                     xAxis: { categories: data.labels, title: { text: 'Thời gian' } },
                     yAxis: { title: { text: 'Số lượng comment' }, min: 0 },
                     tooltip: { shared: true },
+                    legend: { 
+                        useHTML: true,
+                        labelFormatter: function() {
+                            const color = this.color; // màu của series
+                            return `<span style="color:${color}">${this.name}</span>`;
+                        }
+                    },
                     plotOptions: { line: { dataLabels: { enabled: true } } },
                     series: series
                 });
@@ -181,7 +192,7 @@ function loadDonut() {
                         series: [{
                             name: totalData.datasets[0].label,
                             colorByPoint: true,
-                            data: seriesData
+                            data: seriesData,
                         }],
                         drilldown: { series: drilldownSeries }
                     });
@@ -256,6 +267,9 @@ function loadSentimentChart() {
             Highcharts.chart('sentiment-chart', {
                 chart: {
                     type: 'column'
+                },
+                title: {
+                    text: 'Điểm cảm xúc trung bình theo hãng hàng không'
                 },
                 xAxis: {
                     categories: data.labels,
