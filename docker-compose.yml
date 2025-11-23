@@ -114,6 +114,8 @@ services:
       kafka:
         condition: service_started
     restart: on-failure
+    volumes:
+      - ./data:/app/data
 
   # =========================================
   # 2. SPARK CLUSTER (2 WORKERS - Distributed Batch)

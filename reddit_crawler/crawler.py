@@ -3,6 +3,7 @@ import time
 import json
 from datetime import datetime
 import random
+import csv
 from kafka import KafkaProducer
 from kafka.errors import NoBrokersAvailable
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
@@ -13,6 +14,7 @@ KAFKA_TOPIC = 'reddit_topic'
 KAFKA_SERVER = 'kafka:9092'
 
 MODEL_PATH = "./model"
+DATA_PATH = "/app/data/data_realtime.csv"
 tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
 model = AutoModelForSequenceClassification.from_pretrained(MODEL_PATH)
 model.eval()
@@ -109,7 +111,10 @@ try:
                                 "text": body,
                                 "sentiment": sentiment # Đã có nhãn!
                             }
-                            
+                            with open(DATA_PATH, mode="a", newline="", encoding="utf-8") as f:
+                                writer = csv.DictWriter(f, fieldnames=["id", "event_time", "airline", "text", "sentiment"])
+                                writer.writerow(message)
+
                             # 3. Gửi Kafka
                             producer.send(KAFKA_TOPIC, value=message)
                             print(f"[#{stt}] [{airline}] ({sentiment}): {body[:30]}...")
